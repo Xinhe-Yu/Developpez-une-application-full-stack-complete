@@ -23,10 +23,10 @@ public class ArticleDto {
   private String content;
 
   @NotNull
-  private Long user_id;
+  private Long userId;
 
   @NotNull
-  private Long topic_id;
+  private Long topicId;
 
   private List<Long> comments;
 

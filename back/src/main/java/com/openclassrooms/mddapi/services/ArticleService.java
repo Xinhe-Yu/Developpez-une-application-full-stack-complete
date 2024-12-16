@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.openclassrooms.mddapi.models.Article;
 import com.openclassrooms.mddapi.models.Topic;
@@ -14,7 +15,7 @@ import com.openclassrooms.mddapi.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
 
-// @Service
+@Service
 @Transactional
 public class ArticleService {
   @Autowired
@@ -36,6 +37,13 @@ public class ArticleService {
     List<Topic> userTopics = user.getTopics();
     List<Article> articles = articleRepository.findByTopicIn(userTopics);
     return articles;
+  }
+
+  public Article getArticleById(Long id) {
+    Article article = articleRepository.findById(id)
+        .orElseThrow(() -> new UsernameNotFoundException("Article not found"));
+
+    return article;
   }
 
   public void createArticle(Article article, CustomUserDetails userDetails) {

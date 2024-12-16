@@ -2,8 +2,7 @@ package com.openclassrooms.mddapi.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import io.micrometer.common.lang.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,24 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleDto {
+public class CommentDto {
   private Long id;
 
-  @NotNull
-  @Size(max = 255)
-  private String title;
-
-  @NotNull
+  @NonNull
   private String content;
 
-  @NotNull
-  private Long userId;
-
-  @NotNull
-  private Long topicId;
+  private String authorName;
 
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
-
 }

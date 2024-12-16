@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -11,35 +12,24 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-  private final UserRepository userRepository;
-
-  CustomUserDetailsService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+  @Autowired
+  private UserRepository userRepository;
 
   @Override
   @Transactional
   public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(email);
-
-    if (user == null) {
-      throw new UsernameNotFoundException("User not found");
-    }
-    ;
-
-    return CustomUserDetails.builder()
-        .id(user.getId())
-        .email(user.getEmail())
-        .username(user.getUsername())
-        .password(user.getPassword())
-        .build();
+    return userRepository.findByEmail(email)
+        .map(user -> CustomUserDetails.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .password(user.getPassword())
+            .build())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 
   public User getCurrentUser(String email) {
-    User user = userRepository.findByEmail(email);
-    if (user == null) {
-      throw new UsernameNotFoundException("User not found");
-    }
-    return user;
+    return userRepository.findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

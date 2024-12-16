@@ -41,6 +41,7 @@ public class AuthController {
   public ResponseEntity<ApiResponseDto> registerUser(@RequestBody RegisterDto userDto) {
     try {
       userService.validateAndSaveUser(userDto);
+
       Authentication authentication = authenticationManager
           .authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
       String token = jwtService.generateToken(authentication);

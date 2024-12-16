@@ -1,48 +1,63 @@
 package com.openclassrooms.mddapi.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.mddapi.dto.UserDto;
+import com.openclassrooms.mddapi.dto.request.UpdateDto;
+import com.openclassrooms.mddapi.dto.response.ApiResponseDto;
+import com.openclassrooms.mddapi.dto.response.ErrorResponseDto;
+import com.openclassrooms.mddapi.dto.response.MsgResponseDto;
+import com.openclassrooms.mddapi.mappers.UserMapper;
+import com.openclassrooms.mddapi.models.User;
+import com.openclassrooms.mddapi.services.CustomUserDetailsService;
+import com.openclassrooms.mddapi.services.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "auth", description = "User API")
 public class UserController {
-  // @Autowired
-  // private CustomUserDetailsService userDetailsService;
+  @Autowired
+  private CustomUserDetailsService userDetailsService;
 
-  // @Autowired
-  // private UserMapper userMapper;
+  @Autowired
+  private UserMapper userMapper;
 
-  // @Autowired
-  // private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  // @Operation(summary = "Get current user information", description = "Retrieve
-  // information about the currently authenticated user")
-  // @GetMapping("/me")
-  // public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal
-  // UserDetails userDetails) {
-  // User user = userDetailsService.getCurrentUser(userDetails.getUsername());
-  // ;
-  // UserDto userDto = userMapper.convertToDTO(user);
-  // return ResponseEntity.ok(userDto);
-  // }
+  @Operation(summary = "Get current user information", description = "Retrieve information about the currently authenticated user")
+  @GetMapping("/profile")
+  public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    User user = userDetailsService.getCurrentUser(userDetails.getUsername());
+    ;
+    UserDto userDto = userMapper.toDto(user);
+    return ResponseEntity.ok(userDto);
+  }
 
-  // @Operation(summary = "Update current user information", description = "Update
-  // information about the currently authenticated user")
-  // @PutMapping("/me")
-  // public ResponseEntity<ApiResponseDto>
-  // updateCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
-  // @RequestBody UpdateDto userDto) {
-  // try {
-  // userService.validateAndUpdateUser(userDto);
-  // MsgResponseDto response = new MsgResponseDto("User updated");
-  // return ResponseEntity.ok(response);
-  // } catch (Exception e) {
-  // ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
-  // e.getMessage());
-  // return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  // }
-  // }
+  @Operation(summary = "Update current user information", description = "Updateinformation about the currently authenticated user")
+  @PutMapping("/profile")
+  public ResponseEntity<ApiResponseDto> updateCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
+      @RequestBody UpdateDto userDto) {
+    try {
+      userService.validateAndUpdateUser(userDto);
+      MsgResponseDto response = new MsgResponseDto("User updated");
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
+          e.getMessage());
+      return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

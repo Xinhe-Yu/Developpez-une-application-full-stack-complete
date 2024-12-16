@@ -2,8 +2,9 @@ package com.openclassrooms.mddapi.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.openclassrooms.mddapi.models.Topic;
+
+import com.openclassrooms.mddapi.models.Comment;
 
 @Repository
-public interface TopicRepository extends JpaRepository<Topic, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 }

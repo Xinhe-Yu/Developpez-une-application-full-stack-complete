@@ -1,33 +1,39 @@
 package com.openclassrooms.mddapi.mappers;
 
-import java.util.stream.Collectors;
-
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.openclassrooms.mddapi.dto.UserDto;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
+import com.openclassrooms.mddapi.services.TopicService;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
-public class UserMapper {
+@Mapper(componentModel = "spring", imports = {
+    Arrays.class,
+    Collections.class,
+    Optional.class,
+    Collectors.class,
+    Topic.class
+})
+public abstract class UserMapper implements EntityMapper<UserDto, User> {
+  @Autowired
+  TopicService topicService;
 
-  public UserDto convertToDTO(User user) {
-    if (user == null) {
-      return null;
-    }
+  @Mappings({
+      @Mapping(target = "topics", expression = "java(Optional.ofNullable(userDto.getTopics()).orElseGet(Collections::emptyList).stream().map(topic_id -> { Topic topic = this.topicService.findById(topic_id); if (topic != null) { return topic; } return null;}).collect(Collectors.toList()))")
+  })
+  public abstract User toEntity(UserDto userDto);
 
-    UserDto dto = new UserDto();
-    dto.setId(user.getId());
-    dto.setUsername(user.getUsername());
-    dto.setEmail(user.getEmail());
-    dto.setCreatedAt(user.getCreatedAt());
-    dto.setUpdatedAt(user.getUpdatedAt());
-
-    if (user.getTopics() != null) {
-      dto.setTopics(user.getTopics().stream()
-          .map(Topic::getId)
-          .collect(Collectors.toList()));
-    }
-    return dto;
-  }
+  @Mappings({
+      @Mapping(target = "topics", expression = "java(Optional.ofNullable(user.getTopics()).orElseGet(Collections::emptyList).stream().map(topic -> topic.getId()).collect(Collectors.toList()))")
+  })
+  public abstract UserDto toDto(User user);
 }

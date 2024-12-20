@@ -1,9 +1,8 @@
 package com.openclassrooms.mddapi.services;
 
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +35,7 @@ public class CommentService {
     commentRepository.save(comment);
   }
 
-  public Page<Comment> getCommentsByArticleId(Long articleId, int page, int size) {
-    Pageable pageable = PageRequest.of(page, size);
+  public Page<Comment> getCommentsByArticleId(Long articleId, Pageable pageable) {
     return commentRepository.findByArticleId(articleId, pageable);
   }
 }

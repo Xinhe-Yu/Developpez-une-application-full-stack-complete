@@ -1,22 +1,20 @@
 package com.openclassrooms.mddapi.mappers;
 
 import org.mapstruct.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 import com.openclassrooms.mddapi.dto.CommentDto;
 import com.openclassrooms.mddapi.models.Comment;
-import com.openclassrooms.mddapi.services.ArticleService;
 
 @Component
-@Mapper(componentModel = "spring", imports = {
+@Mapper(componentModel = "spring", imports = { UserMapper.class })
+public abstract class CommentMapper implements EntityMapper<CommentDto, Comment> {
+  public abstract CommentDto toDto(Comment comment);
 
-})
-public abstract CommentMapper implements EntityMapper<CommentDto, Comment> {
-  @Autowired
-  ArticleService articleService;
-
-  @Mappings({
-
-  })
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "user", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
+  public abstract Comment toEntity(CommentDto commentDto);
 }

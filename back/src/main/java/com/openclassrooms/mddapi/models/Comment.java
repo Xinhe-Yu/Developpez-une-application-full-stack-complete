@@ -39,7 +39,6 @@ public class Comment {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @NonNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "article_id")
   private Article article;

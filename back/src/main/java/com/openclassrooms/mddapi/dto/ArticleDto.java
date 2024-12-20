@@ -2,8 +2,6 @@ package com.openclassrooms.mddapi.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,21 +12,15 @@ import lombok.NoArgsConstructor;
 public class ArticleDto {
   private Long id;
 
-  @NotNull
-  @Size(max = 255)
   private String title;
 
-  @NotNull
   private String content;
 
-  @NotNull
-  private Long userId;
+  private UserBasicDto user;
 
-  @NotNull
-  private Long topicId;
+  private TopicDto topic;
 
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
-
 }

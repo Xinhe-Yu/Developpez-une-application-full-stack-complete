@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,17 +33,14 @@ public class SpringSecurityConfig {
   private final String jwtKey = "RgHwH7+YjFCX4nLT/PrwtutgPO43Zmtffe1yoPc/gAGN97nrVM8/eK3YUn4uvyn6";
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService)
-      throws Exception {
-    return http.csrf((csrf) -> csrf.disable())
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/login", "/auth/register", "/auth/me").permitAll()
+            .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
             .anyRequest().authenticated())
-        .userDetailsService(customUserDetailsService)
-        .httpBasic(Customizer.withDefaults())
-        .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .build();
   }

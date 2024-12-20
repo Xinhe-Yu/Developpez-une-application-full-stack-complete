@@ -2,6 +2,7 @@ package com.openclassrooms.mddapi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.mddapi.dto.request.LoginDto;
 import com.openclassrooms.mddapi.dto.request.RegisterDto;
 import com.openclassrooms.mddapi.dto.response.ApiResponseDto;
@@ -27,6 +29,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/auth")
 @Tag(name = "auth", description = "Authentication API")
 public class AuthController {
+  // @Autowired
+  // private ObjectMapper objectMapper;
+
   @Autowired
   private AuthenticationManager authenticationManager;
 
@@ -37,9 +42,10 @@ public class AuthController {
   private UserService userService;
 
   @Operation(summary = "Create a new count", description = "Create a new count.")
-  @PostMapping("/register")
+  @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApiResponseDto> registerUser(@RequestBody RegisterDto userDto) {
     try {
+      System.out.println("DTO: " + userDto);
       userService.validateAndSaveUser(userDto);
 
       Authentication authentication = authenticationManager
@@ -48,6 +54,7 @@ public class AuthController {
       TokenResponseDto response = new TokenResponseDto(token);
       return ResponseEntity.ok(response);
     } catch (Exception e) {
+      e.printStackTrace();
       ErrorResponseDto response = new ErrorResponseDto("Registration failed: " + e.getMessage());
       return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -57,6 +64,8 @@ public class AuthController {
   @PostMapping("/login")
   public ResponseEntity<ApiResponseDto> loginUser(@RequestBody LoginDto userDto) {
     try {
+      System.out.println("DTO: " + userDto);
+      System.out.println("Email: " + userDto.getEmail());
       Authentication authentication = authenticationManager
           .authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
       String token = jwtService.generateToken(authentication);

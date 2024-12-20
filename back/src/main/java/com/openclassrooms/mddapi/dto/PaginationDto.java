@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class PaginationDto {
   private Integer currentPage;
   private Integer totalPages;
-  private Integer limit;
-  private Long total;
+  private Integer pageSize;
+  private Long totalElements;
 }

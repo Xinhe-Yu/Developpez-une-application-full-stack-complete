@@ -2,6 +2,7 @@ package com.openclassrooms.mddapi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,13 +26,26 @@ public class UserService {
     return user;
   }
 
-  public void validateAndUpdateUser(UpdateDto userDto) {
+  public void validateAndUpdateUser(UpdateDto userDto, UserDetails currentUser) {
     User user = userRepository.findById(userDto.getId())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+    if (!user.getEmail().equals(currentUser.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to update this user");
+    } else if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), user.getId())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
+    } else if (userRepository.existsByUsernameAndIdNot(userDto.getUsername(), user.getId())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already in use");
+    }
+
     user.setUsername(userDto.getUsername());
     user.setEmail(userDto.getEmail());
 
-    if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+    if (userDto.getNewPassword() != null && !userDto.getNewPassword().isEmpty()) {
+      if (userDto.getPassword() == null || !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
+      }
+
       if (!validatePassword(userDto.getPassword())) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
       }
@@ -46,9 +60,9 @@ public class UserService {
     if (!validatePassword(userDto.getPassword())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
     } else if (userRepository.existsByEmail(userDto.getEmail())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
     } else if (userRepository.existsByUsername(userDto.getUsername())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already in use");
     }
 
     User user = new User(userDto.getEmail(),

@@ -2,7 +2,7 @@ package com.openclassrooms.mddapi.dto.response;
 
 import java.util.List;
 
-import com.openclassrooms.mddapi.dto.CommentDto;
+import com.openclassrooms.mddapi.dto.ArticleDto;
 import com.openclassrooms.mddapi.dto.PaginationDto;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentsResponseDto implements ApiResponseDto {
-  private List<CommentDto> data;
+public class ArticlesResponseDto implements ApiResponseDto {
+  private List<ArticleDto> data;
   private PaginationDto pagination;
 }

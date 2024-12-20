@@ -19,7 +19,9 @@ public class UpdateDto {
   @Size(max = 50)
   private String username;
 
-  @NotBlank
+  @Size(min = 8, max = 255)
+  private String newPassword;
+
   @Size(min = 8, max = 255)
   private String password;
 }

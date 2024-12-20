@@ -16,7 +16,7 @@ public class CommentDto {
   @NonNull
   private String content;
 
-  private String authorName;
+  private UserBasicDto user;
 
   private LocalDateTime createdAt;
 

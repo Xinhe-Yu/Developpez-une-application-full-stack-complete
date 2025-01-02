@@ -2,7 +2,6 @@ package com.openclassrooms.mddapi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,7 +25,7 @@ public class UserService {
     return user;
   }
 
-  public void validateAndUpdateUser(UpdateDto userDto, UserDetails currentUser) {
+  public void validateAndUpdateUser(UpdateDto userDto, CustomUserDetails currentUser) {
     User user = userRepository.findById(userDto.getId())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 

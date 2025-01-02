@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,6 @@ import com.openclassrooms.mddapi.services.CommentService;
 import com.openclassrooms.mddapi.services.CustomUserDetails;
 import com.openclassrooms.mddapi.services.CustomUserDetailsService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -64,7 +64,7 @@ public class ArticleController {
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "25") Integer size,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
-    User user = userDetailsService.getCurrentUser(userDetails.getUsername());
+    User user = userDetailsService.getCurrentUser(userDetails.getEmail());
 
     Page<Article> articlePage = articleService.getAllArticles(user, PageRequest.of(page, size));
     List<ArticleDto> articleDtos = articlePage.stream().map(articleMapper::toDto).collect(Collectors.toList());

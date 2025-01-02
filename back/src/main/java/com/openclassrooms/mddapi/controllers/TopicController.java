@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +21,7 @@ import com.openclassrooms.mddapi.dto.response.MsgResponseDto;
 import com.openclassrooms.mddapi.mappers.TopicMapper;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
+import com.openclassrooms.mddapi.services.CustomUserDetails;
 import com.openclassrooms.mddapi.services.CustomUserDetailsService;
 import com.openclassrooms.mddapi.services.SubscriptionService;
 import com.openclassrooms.mddapi.services.TopicService;
@@ -53,9 +53,9 @@ public class TopicController {
 
   @PostMapping("/{id}/subscribe")
   public ResponseEntity<ApiResponseDto> subscribe(@PathVariable Long id,
-      @AuthenticationPrincipal UserDetails userDetails) {
+      @AuthenticationPrincipal CustomUserDetails userDetails) {
     try {
-      User user = userDetailsService.getCurrentUser(userDetails.getUsername());
+      User user = userDetailsService.getCurrentUser(userDetails.getEmail());
       subscriptionService.subscribe(id, user);
       MsgResponseDto response = new MsgResponseDto("Subscribed to topic");
       return ResponseEntity.ok(response);
@@ -72,9 +72,9 @@ public class TopicController {
 
   @DeleteMapping("/{id}/subscribe")
   public ResponseEntity<ApiResponseDto> unsubscribe(@PathVariable Long id,
-      @AuthenticationPrincipal UserDetails userDetails) {
+      @AuthenticationPrincipal CustomUserDetails userDetails) {
     try {
-      User user = userDetailsService.getCurrentUser(userDetails.getUsername());
+      User user = userDetailsService.getCurrentUser(userDetails.getEmail());
       subscriptionService.unsubscribe(id, user);
       MsgResponseDto response = new MsgResponseDto("Unsubscribed from topic");
       return ResponseEntity.ok(response);

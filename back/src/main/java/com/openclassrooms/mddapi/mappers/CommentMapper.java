@@ -16,5 +16,6 @@ public abstract class CommentMapper implements EntityMapper<CommentDto, Comment>
   @Mapping(target = "user", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "article", ignore = true)
   public abstract Comment toEntity(CommentDto commentDto);
 }

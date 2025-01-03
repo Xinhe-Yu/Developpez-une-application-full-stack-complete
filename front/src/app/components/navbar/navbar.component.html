@@ -1,0 +1,28 @@
+@if ($isLogged | async; as isLogged) {
+<div class="nav nav-in">
+  <a routerLink="" class="logo"><img src="/assets/logo_p6.png" alt="logo" /></a>
+  <a class="nav-hamburger" (click)="openOffcanvas()">
+    <mat-icon aria-hidden="false" aria-label="menu collapse button" fontIcon="menu"></mat-icon>
+  </a>
+  <div class="overlay" [class.active]="isOffcanvasOpen" (click)="closeOffcanvas()"></div>
+  <div class="offcanvas" [class.open]="isOffcanvasOpen">
+    <div class="nav-links">
+      <a routerLink="">Articles</a>
+      <a routerLink="app-topics">Thèmes</a>
+    </div>
+    <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+  </div>
+  <div class="nav-items">
+    <a routerLink="">Articles</a>
+    <a routerLink="app-topics">Thèmes</a>
+    <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+  </div>
+</div>
+} @else if ($notHomePage | async) {
+<div class="nav nav-ex">
+  <a routerLink="" class="logo"><img src="/assets/logo_p6.png" alt="logo" /></a>
+  <a routerLink="" class="icon">
+    <mat-icon aria-hidden="false" aria-label="arrow back" fontIcon="arrow_back"></mat-icon>
+  </a>
+</div>
+}

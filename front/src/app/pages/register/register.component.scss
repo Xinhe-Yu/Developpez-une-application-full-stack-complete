@@ -1,0 +1,25 @@
+mat-card {
+  margin: auto;
+  width: 80vw;
+  max-width: 20rem;
+  box-shadow: 0 0 0 0 !important;
+
+  mat-card-header {
+    justify-content: center;
+  }
+
+  mat-card-content {
+    margin: 2rem 0;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  button[type="submit"] {
+    width: 12rem;
+  }
+}

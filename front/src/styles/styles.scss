@@ -17,6 +17,18 @@ body {
   padding: 1rem;
 }
 
+mat-icon.lg {
+  font-size: 2rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+mat-icon.xl {
+  font-size: 4rem;
+  height: 4rem;
+  width: 4rem;
+}
+
 @media (min-width: 768px) {
   .grid-two-columns {
     grid-template-columns: 1fr 1fr;

@@ -8,16 +8,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.mddapi.dto.UserDto;
 import com.openclassrooms.mddapi.dto.request.LoginDto;
 import com.openclassrooms.mddapi.dto.request.RegisterDto;
 import com.openclassrooms.mddapi.dto.response.ApiResponseDto;
 import com.openclassrooms.mddapi.dto.response.ErrorResponseDto;
 import com.openclassrooms.mddapi.dto.response.TokenResponseDto;
+import com.openclassrooms.mddapi.mappers.UserMapper;
+import com.openclassrooms.mddapi.models.User;
+import com.openclassrooms.mddapi.services.CustomUserDetails;
+import com.openclassrooms.mddapi.services.CustomUserDetailsService;
 import com.openclassrooms.mddapi.services.JWTService;
 import com.openclassrooms.mddapi.services.UserService;
 
@@ -36,6 +43,12 @@ public class AuthController {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private CustomUserDetailsService userDetailsService;
+
+  @Autowired
+  private UserMapper userMapper;
 
   @Operation(summary = "Create a new count", description = "Create a new count.")
   @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,7 +75,7 @@ public class AuthController {
   public ResponseEntity<ApiResponseDto> loginUser(@RequestBody LoginDto userDto) {
     try {
       Authentication authentication = authenticationManager
-          .authenticate(new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
+          .authenticate(new UsernamePasswordAuthenticationToken(userDto.getIdentifier(), userDto.getPassword()));
       String token = jwtService.generateToken(authentication);
       TokenResponseDto response = new TokenResponseDto(token);
       return ResponseEntity.ok(response);
@@ -70,5 +83,14 @@ public class AuthController {
       ErrorResponseDto response = new ErrorResponseDto("Authentication failed");
       return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @Operation(summary = "Get current user information", description = "Retrieve information about the currently authenticated user")
+  @GetMapping("/me")
+  public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    User user = userDetailsService.getCurrentUser(userDetails.getEmail());
+
+    UserDto userDto = userMapper.toDto(user);
+    return ResponseEntity.ok(userDto);
   }
 }

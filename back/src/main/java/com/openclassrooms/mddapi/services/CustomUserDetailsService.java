@@ -17,8 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   @Transactional
-  public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    return userRepository.findByEmail(email)
+  public CustomUserDetails loadUserByUsername(String loginIdentifier) throws UsernameNotFoundException {
+    return userRepository.findByEmailOrUsername(loginIdentifier, loginIdentifier)
         .map(user -> CustomUserDetails.builder()
             .id(user.getId())
             .email(user.getEmail())
@@ -28,8 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 
-  public User getCurrentUser(String email) {
-    return userRepository.findByEmail(email)
+  public User getCurrentUser(String loginIdentifier) {
+    return userRepository.findByEmailOrUsername(loginIdentifier, loginIdentifier)
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

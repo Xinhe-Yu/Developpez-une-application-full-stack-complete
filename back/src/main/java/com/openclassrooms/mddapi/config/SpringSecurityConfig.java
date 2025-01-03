@@ -67,6 +67,7 @@ public class SpringSecurityConfig {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(customUserDetailsService);
     authProvider.setPasswordEncoder(bCryptPasswordEncoder);
+
     return new ProviderManager(authProvider);
   }
 }

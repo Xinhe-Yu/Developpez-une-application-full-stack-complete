@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { catchError, Observable, tap, throwError } from "rxjs";
-import { User } from "../interfaces/user.interface";
+import { Observable } from "rxjs";
 import { LoginRequest } from "../interfaces/auth/loginRequest.interface";
 import { RegisterRequest } from "../interfaces/auth/registerRequest.interface";
 import { Jwt } from "../interfaces/auth/jwt.interface";

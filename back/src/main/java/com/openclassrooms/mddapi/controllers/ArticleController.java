@@ -8,18 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.openclassrooms.mddapi.dto.ArticleDto;
 import com.openclassrooms.mddapi.dto.CommentDto;
 import com.openclassrooms.mddapi.dto.PaginationDto;
 import com.openclassrooms.mddapi.dto.request.ArticleInputDto;
+import com.openclassrooms.mddapi.dto.request.CommentInputDto;
 import com.openclassrooms.mddapi.dto.response.ArticlesResponseDto;
 import com.openclassrooms.mddapi.dto.response.CommentsResponseDto;
 import com.openclassrooms.mddapi.dto.response.MsgResponseDto;
@@ -84,8 +79,8 @@ public class ArticleController {
   @PostMapping
   public ResponseEntity<MsgResponseDto> createArticle(@Valid @RequestBody ArticleInputDto articleDto,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
-    Article article = articleMapper.toEntity(articleDto);
-    articleService.createArticle(article, userDetails);
+    Article article = articleMapper.toEntity(articleDto, userDetails);
+    articleService.createArticle(article);
     MsgResponseDto response = new MsgResponseDto("Article created");
     return ResponseEntity.ok(response);
   }
@@ -108,10 +103,10 @@ public class ArticleController {
   @PostMapping("/{id}/comments")
   public ResponseEntity<MsgResponseDto> createComment(
       @PathVariable Long id,
-      @Valid @RequestBody CommentDto commentDto,
+      @Valid @RequestBody CommentInputDto commentDto,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
-    Comment comment = commentMapper.toEntity(commentDto);
-    commentService.createComment(id, comment, userDetails);
+    Comment comment = commentMapper.toEntity(commentDto, id, userDetails);
+    commentService.createComment(comment);
     MsgResponseDto response = new MsgResponseDto("Comment created");
     return ResponseEntity.ok(response);
   }

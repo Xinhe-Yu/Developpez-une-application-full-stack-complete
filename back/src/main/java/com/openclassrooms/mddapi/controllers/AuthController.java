@@ -9,15 +9,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.openclassrooms.mddapi.dto.UserDto;
 import com.openclassrooms.mddapi.dto.request.LoginDto;
 import com.openclassrooms.mddapi.dto.request.RegisterDto;
+import com.openclassrooms.mddapi.dto.request.UpdateDto;
 import com.openclassrooms.mddapi.dto.response.ApiResponseDto;
 import com.openclassrooms.mddapi.dto.response.ErrorResponseDto;
 import com.openclassrooms.mddapi.dto.response.TokenResponseDto;
@@ -54,8 +58,6 @@ public class AuthController {
   @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApiResponseDto> registerUser(@RequestBody RegisterDto userDto) {
     try {
-      System.out.println("DTO: " + userDto);
-
       userService.validateAndSaveUser(userDto);
 
       Authentication authentication = authenticationManager
@@ -92,5 +94,36 @@ public class AuthController {
 
     UserDto userDto = userMapper.toDto(user);
     return ResponseEntity.ok(userDto);
+  }
+
+  @Operation(summary = "Update current user information", description = "Updateinformation about the currently authenticated user")
+  @PutMapping("/update")
+  public ResponseEntity<ApiResponseDto> updateCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+      @RequestBody UpdateDto userDto) {
+    try {
+      User updatedUser = userService.validateAndUpdateUser(userDto, userDetails);
+
+      CustomUserDetails updatedUserDetails = CustomUserDetails.builder()
+          .id(updatedUser.getId())
+          .email(updatedUser.getEmail())
+          .username(updatedUser.getUsername())
+          .password(updatedUser.getPassword())
+          .build();
+      UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUserDetails, null,
+          updatedUserDetails.getAuthorities());
+      SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+      String token = jwtService.generateToken(newAuth);
+      TokenResponseDto response = new TokenResponseDto(token);
+      return ResponseEntity.ok(response);
+    } catch (ResponseStatusException e) {
+      ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
+          e.getReason());
+      return new ResponseEntity<>(response, e.getStatusCode());
+    } catch (Exception e) {
+      ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
+          e.getMessage());
+      return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
   }
 }

@@ -8,9 +8,6 @@ import lombok.Data;
 @Data
 public class UpdateDto {
   @NotBlank
-  private Long id;
-
-  @NotBlank
   @Size(max = 50)
   @Email
   private String email;

@@ -1,14 +1,12 @@
 package com.openclassrooms.mddapi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.openclassrooms.mddapi.models.Article;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repositories.ArticleRepository;
-import com.openclassrooms.mddapi.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -17,15 +15,6 @@ import jakarta.transaction.Transactional;
 public class ArticleService {
   @Autowired
   private ArticleRepository articleRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
-  // @Autowired
-  // private UserService userService;
-
-  // @Autowired
-  // private TopicRepository topicRepository;
 
   public Page<Article> getAllArticles(User user, Pageable pageable) {
     return articleRepository.findByTopicIn(user, pageable);
@@ -38,11 +27,7 @@ public class ArticleService {
     return article;
   }
 
-  public void createArticle(Article article, CustomUserDetails userDetails) {
-    User user = userRepository.findByEmail(userDetails.getEmail())
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-    article.setUser(user);
+  public void createArticle(Article article) {
     articleRepository.save(article);
   }
 }

@@ -1,3 +1,6 @@
+@if ($isLogged | async; as isLogged) {
+
+} @else {
 <div class="center">
   <img src="/assets/logo_p6.png" alt="logo" />
   <div class="grid-two-columns">
@@ -5,3 +8,4 @@
     <button mat-stroked-button routerLink="register">S'inscrire</button>
   </div>
 </div>
+}

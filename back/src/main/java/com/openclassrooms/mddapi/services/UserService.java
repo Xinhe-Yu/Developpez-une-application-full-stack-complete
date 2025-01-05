@@ -25,13 +25,11 @@ public class UserService {
     return user;
   }
 
-  public void validateAndUpdateUser(UpdateDto userDto, CustomUserDetails currentUser) {
-    User user = userRepository.findById(userDto.getId())
+  public User validateAndUpdateUser(UpdateDto userDto, CustomUserDetails currentUser) {
+    User user = userRepository.findById(currentUser.getId())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-    if (!user.getEmail().equals(currentUser.getUsername())) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to update this user");
-    } else if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), user.getId())) {
+    if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), user.getId())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
     } else if (userRepository.existsByUsernameAndIdNot(userDto.getUsername(), user.getId())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already in use");
@@ -45,14 +43,15 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
       }
 
-      if (!validatePassword(userDto.getPassword())) {
+      if (!validatePassword(userDto.getNewPassword())) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
       }
 
-      user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+      user.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
     }
 
     userRepository.save(user);
+    return user;
   }
 
   public void validateAndSaveUser(RegisterDto userDto) {

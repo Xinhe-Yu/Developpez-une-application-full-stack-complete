@@ -14,10 +14,6 @@ export class UserService {
     return this.httpClient.get<User>(`${this.pathService}/profile`);
   }
 
-  public updateProfile(updateRequest: UpdateRequest): Observable<Response> {
-    return this.httpClient.put<Response>(`${this.pathService}/profile`, updateRequest);
-  }
-
   public getSubscriptions(): Observable<Topic[]> {
     return this.httpClient.get<Topic[]>(`${this.pathService}/subs`);
   }

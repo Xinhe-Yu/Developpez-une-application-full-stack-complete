@@ -4,6 +4,8 @@ import { Observable } from "rxjs";
 import { Articles } from "../interfaces/articles.interface";
 import { Article } from "../interfaces/article.interface";
 import { Comments } from "../interfaces/comments.interface";
+import { NewComment } from "../interfaces/form/newComment.interface";
+import { NewArticle } from "../interfaces/form/newArticle.interface";
 
 @Injectable({ providedIn: 'root' })
 export class ArticleService {
@@ -18,15 +20,15 @@ export class ArticleService {
     return this.httpClient.get<Article>(`${this.pathService}/${id}`);
   }
 
-  public create(form: FormData): Observable<Response> {
-    return this.httpClient.post<Response>(`${this.pathService}`, form);
+  public create(article: NewArticle): Observable<Article> {
+    return this.httpClient.post<Article>(`${this.pathService}`, article);
   }
 
   public getComments(id: number): Observable<Comments> {
     return this.httpClient.get<Comments>(`${this.pathService}/${id}/comments`);
   }
 
-  public createComment(id: number, form: FormData): Observable<Response> {
-    return this.httpClient.post<Response>(`${this.pathService}/${id}/comments`, form);
+  public createComment(id: number, comment: NewComment): Observable<Response> {
+    return this.httpClient.post<Response>(`${this.pathService}/${id}/comments`, comment);
   }
 }

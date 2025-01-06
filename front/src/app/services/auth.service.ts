@@ -5,6 +5,7 @@ import { LoginRequest } from "../interfaces/auth/loginRequest.interface";
 import { RegisterRequest } from "../interfaces/auth/registerRequest.interface";
 import { Jwt } from "../interfaces/auth/jwt.interface";
 import { Session } from "../interfaces/auth/session.interface";
+import { UpdateRequest } from "../interfaces/auth/updateRequest.interface";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -21,5 +22,9 @@ export class AuthService {
 
   public me(): Observable<Session> {
     return this.httpClient.get<Session>(`${this.pathService}/me`);
+  }
+
+  public update(updateRequest: UpdateRequest): Observable<Response> {
+    return this.httpClient.put<Response>(`${this.pathService}/update`, updateRequest);
   }
 }

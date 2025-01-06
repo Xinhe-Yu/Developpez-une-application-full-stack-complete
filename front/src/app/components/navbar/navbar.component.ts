@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { filter, map, Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterModule } from '@angular/router';
+import { combineLatest, filter, map, Observable, startWith } from 'rxjs';
 import { SessionService } from 'src/app/services/session.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -12,26 +12,40 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     RouterLink,
     AsyncPipe,
     MatIconModule,
-    MatSidenavModule
+    MatSidenavModule,
+    RouterModule
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 
-export class NavbarComponent {
-  public $isLogged!: Observable<boolean>;
-  public $notHomePage!: Observable<boolean>;
+export class NavbarComponent implements OnInit {
+  public $navState!: Observable<{ isLogged: boolean, isArticlePage: boolean, notHomePage: boolean }>;
   isOffcanvasOpen = false;
 
   constructor(
     private sessionService: SessionService,
     private router: Router
-  ) {
-    this.$isLogged = this.sessionService.$isLogged();
-    this.$notHomePage = this.router.events.pipe(
+  ) { }
+
+  ngOnInit(): void {
+    const $isLogged = this.sessionService.$isLogged().pipe(startWith(false));
+    const $isArticlePage = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(() => this.router.url !== '/')
+      map(() => this.router.url.startsWith('/articles')),
+      startWith(false)
     );
+    const $notHomePage = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => this.router.url !== '/'),
+      startWith(false)
+    );
+
+    this.$navState = combineLatest({
+      isLogged: $isLogged,
+      isArticlePage: $isArticlePage,
+      notHomePage: $notHomePage
+    });
   }
 
   openOffcanvas(): void {

@@ -1,4 +1,5 @@
-@if ($isLogged | async; as isLogged) {
+@if ($navState | async; as state) {
+@if (state.isLogged) {
 <div class="nav nav-in">
   <a routerLink="" class="logo"><img src="/assets/logo_p6.png" alt="logo" /></a>
   <a class="nav-hamburger" (click)="openOffcanvas()">
@@ -8,21 +9,27 @@
   <div class="offcanvas" [class.open]="isOffcanvasOpen">
     <div class="nav-links">
       <a routerLink="">Articles</a>
-      <a routerLink="app-topics">Thèmes</a>
+      <a [routerLink]="['/topics']">Thèmes</a>
     </div>
     <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
   </div>
   <div class="nav-items">
-    <a routerLink="">Articles</a>
-    <a routerLink="app-topics">Thèmes</a>
+    <a routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Articles</a>
+    <a [routerLink]="['/topics']" routerLinkActive="active-link">Thèmes</a>
     <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
   </div>
+  @if(state.isArticlePage) {
+  <a routerLink="" class="icon" style="position:absolute; left: 1rem; bottom: -3rem;">
+    <mat-icon aria-hidden="false" aria-label="arrow back" fontIcon="arrow_back"></mat-icon>
+  </a>
+  }
 </div>
-} @else if ($notHomePage | async) {
+} @else if (state.notHomePage) {
 <div class="nav nav-ex">
   <a routerLink="" class="logo"><img src="/assets/logo_p6.png" alt="logo" /></a>
   <a routerLink="" class="icon">
     <mat-icon aria-hidden="false" aria-label="arrow back" fontIcon="arrow_back"></mat-icon>
   </a>
 </div>
+}
 }

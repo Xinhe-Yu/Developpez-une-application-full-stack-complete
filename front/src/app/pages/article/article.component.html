@@ -1,0 +1,47 @@
+<div class="p2"></div>
+@if($articleData | async; as data){
+<div class="article-container">
+
+  <div class="article">
+    <h2>{{data.article.title}}</h2>
+    <div>
+      <p>{{data.article.createdAt | date: 'dd/MM/yyyy'}}</p>
+      <p>{{data.article.user.username }}</p>
+      <p>{{data.article.topic.name }}</p>
+    </div>
+    <p>
+      {{data.article.content}}
+    </p>
+  </div>
+  <hr>
+  <h3>Commentaires</h3>
+  <div class="comments">
+    @for(comment of data.comments.data; track comment.id){
+    <div class="comment">
+      <p class="user">
+        {{comment.user.username}}
+      </p>
+      <p class="content">
+        {{ comment.content }}
+      </p>
+    </div>
+    }
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" (submit)="$event.preventDefault()">
+  <mat-form-field fxFlex>
+    <input matInput formControlName="content" placeholder="Écrivez ici votre Commentaire">
+    @if (form.get('content')?.hasError('required')) {
+    <mat-error>Commentaire ne doit pas être vide</mat-error>
+    }
+  </mat-form-field>
+
+  @if(isSubmitting) {
+  <mat-spinner class="submitting"></mat-spinner>
+  } @else {
+  <button class="submit" mat-button color="primary" type="submit" [disabled]="form.invalid">
+  </button>
+  }
+</form>
+}

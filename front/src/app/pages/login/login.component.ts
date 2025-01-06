@@ -36,7 +36,7 @@ export class LoginComponent {
   public onError = false;
 
   public form: FormGroup = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+    identifier: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(8)]]
   });;
 

@@ -8,11 +8,11 @@
       <mat-form-field fxFlex floatLabel="always" appearance="outline">
         <mat-label>E-mail ou nom d'utilisateur</mat-label>
         <!-- <input matInput> -->
-        <input matInput formControlName="username">
-        @if (form.get('username')?.hasError('required')) {
+        <input matInput formControlName="identifier">
+        @if (form.get('identifier')?.hasError('required')) {
         <mat-error>Email is required</mat-error>
         }
-        @if (form.get('username')?.hasError('minlength')) {
+        @if (form.get('identifier')?.hasError('minlength')) {
         <mat-error>Please enter a valid email address or a username
           at least 3 characters</mat-error>
         }

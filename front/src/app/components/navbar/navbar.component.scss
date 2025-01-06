@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables' as *;
 
 a {
   text-decoration: none;
@@ -11,6 +11,7 @@ a {
 }
 
 .nav-in {
+  position: relative;
   border-bottom: 2px solid #000;
   display: flex;
   justify-content: space-between;
@@ -104,6 +105,9 @@ a {
   display: block;
 }
 
+.active-link {
+  color: $primary !important;
+}
 
 @media (min-width: 768px) {
   .nav {
@@ -129,10 +133,6 @@ a {
       width: 30vw;
       justify-content: space-around;
       align-items: center;
-
-
-
-
     }
 
     .nav-hamburger {

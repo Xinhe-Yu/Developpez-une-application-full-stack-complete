@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { finalize, forkJoin, map, Observable, switchMap } from 'rxjs';
+import { finalize, forkJoin, map, Observable, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Article } from 'src/app/interfaces/article.interface';
 import { Comments } from 'src/app/interfaces/comments.interface';
 import { NewComment } from 'src/app/interfaces/form/newComment.interface';
@@ -30,6 +30,7 @@ import { ArticleService } from 'src/app/services/article.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleComponent implements OnInit {
+  @ViewChild('commentInput') input!: ElementRef<HTMLInputElement>;
   public $articleData!: Observable<{ article: Article, comments: Comments }>;
   public form: FormGroup = this.fb.group({
     content: ['', [Validators.required]]
@@ -53,10 +54,7 @@ export class ArticleComponent implements OnInit {
     );
   }
 
-  public submit(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
+  public submit(): void {
     if (this.form.invalid) {
       return;
     }
@@ -64,21 +62,27 @@ export class ArticleComponent implements OnInit {
     this.isSubmitting = true;
     const newComment = this.form.getRawValue() as NewComment;
     const articleId = this.route.snapshot.params['id'];
-
     this.articleService.createComment(articleId, newComment).pipe(
       switchMap(() => this.articleService.getComments(articleId)),
+      withLatestFrom(this.$articleData),
+      map(([newComments, currentData]) => ({
+        ...currentData,
+        comments: newComments
+      })),
+      tap(updatedData => {
+        this.$articleData = of(updatedData);
+      }),
       finalize(() => {
         this.isSubmitting = false;
         this.form.reset();
+        setTimeout(() => {
+          this.input.nativeElement.blur();
+        }, 200);
+        this.form.markAsUntouched();
+        this.form.markAsPristine();
         this.cdr.markForCheck();
       })
-    ).subscribe(comments => {
-      this.$articleData = this.$articleData.pipe(
-        map(data => ({
-          ...data,
-          comments: comments
-        }))
-      );
+    ).subscribe(() => {
       this.scrollToBottom();
     });
   }

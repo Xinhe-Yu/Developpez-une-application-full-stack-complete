@@ -1,1 +1,33 @@
-<p>topics works!</p>
+@if($topicData | async; as data) {
+<ng-container>
+  <div class="grid-two-columns topics">
+    @for(topic of data.topics; track topic.id) {
+    <mat-card>
+      <mat-card-title>
+        {{topic.name}}
+      </mat-card-title>
+      <mat-card-content>
+        {{topic.description}}
+        On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions,
+        et empêche de se concentrer sur la mise en page elle-même. L'avantage du Lorem Ipsum sur un texte générique
+        comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale, et en
+        tout cas comparable avec celle du français standard. De nombreuses suites logicielles
+      </mat-card-content>
+      @if(data.subscriptions.includes(topic.id)) {
+      <button mat-raised-button color="warn" (click)="unsubscribe(topic)">
+        Se désabonner
+      </button>
+      } @else {
+      <button mat-raised-button color="primary" (click)="subscribe(topic)">
+        S'abonner
+      </button>
+      }
+    </mat-card>
+
+    }
+
+  </div>
+
+</ng-container>
+
+}

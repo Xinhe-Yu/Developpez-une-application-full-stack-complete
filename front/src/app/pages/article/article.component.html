@@ -29,9 +29,9 @@
   </div>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="submit()" (submit)="$event.preventDefault()">
+<form [formGroup]="form" (ngSubmit)="submit()">
   <mat-form-field fxFlex>
-    <input matInput formControlName="content" placeholder="Écrivez ici votre Commentaire">
+    <input #commentInput matInput formControlName="content" placeholder="Écrivez ici votre Commentaire">
     @if (form.get('content')?.hasError('required')) {
     <mat-error>Commentaire ne doit pas être vide</mat-error>
     }

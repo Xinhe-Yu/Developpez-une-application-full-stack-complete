@@ -27,7 +27,7 @@ public class ArticleService {
     return article;
   }
 
-  public void createArticle(Article article) {
-    articleRepository.save(article);
+  public Article createArticle(Article article) {
+    return articleRepository.save(article);
   }
 }

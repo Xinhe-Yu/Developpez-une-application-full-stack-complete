@@ -13,8 +13,8 @@ public class CommentService {
   @Autowired
   private CommentRepository commentRepository;
 
-  public void createComment(Comment comment) {
-    commentRepository.save(comment);
+  public Comment createComment(Comment comment) {
+    return commentRepository.save(comment);
   }
 
   public Page<Comment> getCommentsByArticleId(Long articleId, Pageable pageable) {

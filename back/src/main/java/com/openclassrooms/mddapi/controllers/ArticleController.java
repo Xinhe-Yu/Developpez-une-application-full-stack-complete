@@ -17,7 +17,6 @@ import com.openclassrooms.mddapi.dto.request.ArticleInputDto;
 import com.openclassrooms.mddapi.dto.request.CommentInputDto;
 import com.openclassrooms.mddapi.dto.response.ArticlesResponseDto;
 import com.openclassrooms.mddapi.dto.response.CommentsResponseDto;
-import com.openclassrooms.mddapi.dto.response.MsgResponseDto;
 import com.openclassrooms.mddapi.mappers.ArticleMapper;
 import com.openclassrooms.mddapi.mappers.CommentMapper;
 import com.openclassrooms.mddapi.mappers.PaginationMapper;
@@ -77,12 +76,11 @@ public class ArticleController {
   }
 
   @PostMapping
-  public ResponseEntity<MsgResponseDto> createArticle(@Valid @RequestBody ArticleInputDto articleDto,
+  public ResponseEntity<ArticleDto> createArticle(@Valid @RequestBody ArticleInputDto articleDto,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
     Article article = articleMapper.toEntity(articleDto, userDetails);
-    articleService.createArticle(article);
-    MsgResponseDto response = new MsgResponseDto("Article created");
-    return ResponseEntity.ok(response);
+    ArticleDto savedArticleDto = articleMapper.toDto(articleService.createArticle(article));
+    return ResponseEntity.ok(savedArticleDto);
   }
 
   @GetMapping("/{id}/comments")
@@ -101,14 +99,12 @@ public class ArticleController {
   }
 
   @PostMapping("/{id}/comments")
-  public ResponseEntity<MsgResponseDto> createComment(
+  public ResponseEntity<CommentDto> createComment(
       @PathVariable Long id,
       @Valid @RequestBody CommentInputDto commentDto,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
     Comment comment = commentMapper.toEntity(commentDto, id, userDetails);
-    commentService.createComment(comment);
-    MsgResponseDto response = new MsgResponseDto("Comment created");
-    return ResponseEntity.ok(response);
+    CommentDto savedCommentDto = commentMapper.toDto(commentService.createComment(comment));
+    return ResponseEntity.ok(savedCommentDto);
   }
-
 }

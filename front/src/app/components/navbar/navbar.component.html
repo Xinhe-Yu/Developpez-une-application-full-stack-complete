@@ -11,12 +11,16 @@
       <a routerLink="">Articles</a>
       <a [routerLink]="['/topics']">Thèmes</a>
     </div>
-    <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+    <a [routerLink]="['/profile']">
+      <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+    </a>
   </div>
   <div class="nav-items">
     <a routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Articles</a>
     <a [routerLink]="['/topics']" routerLinkActive="active-link">Thèmes</a>
-    <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+    <a [routerLink]="['/profile']" routerLinkActive="active-link">
+      <mat-icon aria-hidden="false" aria-label="user profile" fontIcon="account_circle" class="xl"></mat-icon>
+    </a>
   </div>
   @if(state.isArticlePage) {
   <a routerLink="" class="icon" style="position:absolute; left: 1rem; bottom: -3rem;">

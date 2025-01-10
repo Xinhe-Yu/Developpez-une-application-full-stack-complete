@@ -4,25 +4,25 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
-  public isLogged = false;
-  public user: Session | undefined;
-
-  private isLoggedSubject = new BehaviorSubject<boolean>(this.isLogged);
+  private isLoggedSubject = new BehaviorSubject<boolean>(false);
+  private userSubject = new BehaviorSubject<Session | undefined>(undefined);
 
   public $isLogged(): Observable<boolean> {
     return this.isLoggedSubject.asObservable();
   }
 
+  public $user(): Observable<Session | undefined> {
+    return this.userSubject.asObservable();
+  }
+
   public logIn(user: Session): void {
-    this.user = user;
-    this.isLogged = true;
-    this.isLoggedSubject.next(this.isLogged);
+    this.userSubject.next(user);
+    this.isLoggedSubject.next(true);
   }
 
   public logOut(): void {
     localStorage.removeItem('authToken');
-    this.user = undefined;
-    this.isLogged = false;
-    this.isLoggedSubject.next(this.isLogged);
+    this.userSubject.next(undefined);
+    this.isLoggedSubject.next(false);
   }
 }

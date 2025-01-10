@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { Articles } from "../interfaces/articles.interface";
 import { Article } from "../interfaces/article.interface";
 import { Comments } from "../interfaces/comments.interface";
+import { Comment } from "../interfaces/comment.interface";
 import { NewComment } from "../interfaces/form/newComment.interface";
 import { NewArticle } from "../interfaces/form/newArticle.interface";
 
@@ -28,7 +29,7 @@ export class ArticleService {
     return this.httpClient.get<Comments>(`${this.pathService}/${id}/comments`);
   }
 
-  public createComment(id: number, comment: NewComment): Observable<Response> {
-    return this.httpClient.post<Response>(`${this.pathService}/${id}/comments`, comment);
+  public createComment(id: number, comment: NewComment): Observable<Comment> {
+    return this.httpClient.post<Comment>(`${this.pathService}/${id}/comments`, comment);
   }
 }

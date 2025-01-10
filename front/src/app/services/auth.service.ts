@@ -24,7 +24,7 @@ export class AuthService {
     return this.httpClient.get<Session>(`${this.pathService}/me`);
   }
 
-  public update(updateRequest: UpdateRequest): Observable<Response> {
-    return this.httpClient.put<Response>(`${this.pathService}/update`, updateRequest);
+  public update(updateRequest: UpdateRequest): Observable<Jwt> {
+    return this.httpClient.put<Jwt>(`${this.pathService}/update`, updateRequest);
   }
 }

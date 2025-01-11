@@ -7,6 +7,6 @@ export interface Article {
   content: string;
   user: UserBasic;
   topic: Topic;
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
 }

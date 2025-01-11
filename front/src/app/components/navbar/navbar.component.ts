@@ -46,6 +46,12 @@ export class NavbarComponent implements OnInit {
       isArticlePage: $isArticlePage,
       notHomePage: $notHomePage
     });
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.isOffcanvasOpen = false;
+    });
   }
 
   openOffcanvas(): void {

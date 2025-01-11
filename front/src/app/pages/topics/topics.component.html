@@ -1,7 +1,8 @@
 @if($topicData | async; as data) {
 <ng-container>
-  <div class="grid-two-columns topics">
+  @if(data.subscriptions.length < data.topics.length) { <div class="grid-two-columns topics">
     @for(topic of data.topics; track topic.id) {
+    @if(!data.subscriptions.includes(topic.id)) {
     <mat-card>
       <mat-card-title>
         {{topic.name}}
@@ -13,20 +14,17 @@
         comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale, et en
         tout cas comparable avec celle du français standard. De nombreuses suites logicielles
       </mat-card-content>
-      @if(data.subscriptions.includes(topic.id)) {
-      <button mat-raised-button color="warn" (click)="unsubscribe(topic)">
-        Se désabonner
-      </button>
-      } @else {
       <button mat-raised-button color="primary" (click)="subscribe(topic)">
         S'abonner
       </button>
-      }
     </mat-card>
-
     }
-
-  </div>
+    }
+    </div>
+    } @else {
+    <div class="p2"></div>
+    <div>Bravo, vous avez déjà abonné tous les thèmes !</div>
+    }
 
 </ng-container>
 

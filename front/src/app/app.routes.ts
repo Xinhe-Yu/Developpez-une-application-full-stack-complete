@@ -7,6 +7,7 @@ import { ArticleComponent } from './pages/article/article.component';
 import { ArticleNewComponent } from './pages/article-new/article-new.component';
 import { TopicsComponent } from './pages/topics/topics.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 export const routes: Routes = [
   { path: "", component: HomeComponent },
   { path: "login", component: LoginComponent },
@@ -15,4 +16,5 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'articles/new', component: ArticleNewComponent },
   { path: 'articles/:id', component: ArticleComponent },
+  { path: '**', component: NotFoundComponent }
 ];

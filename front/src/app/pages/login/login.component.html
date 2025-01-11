@@ -5,9 +5,8 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-card-content fxLayout="column">
-      <mat-form-field fxFlex floatLabel="always" appearance="outline">
-        <mat-label>E-mail ou nom d'utilisateur</mat-label>
-        <!-- <input matInput> -->
+      <div>E-mail ou nom d'utilisateur</div>
+      <mat-form-field fxFlex>
         <input matInput formControlName="identifier">
         @if (form.get('identifier')?.hasError('required')) {
         <mat-error>Email is required</mat-error>
@@ -18,8 +17,8 @@
         }
       </mat-form-field>
 
-      <mat-form-field fxFlex floatLabel="always" appearance="outline">
-        <mat-label>Mot de passe</mat-label>
+      <div>Mot de passe</div>
+      <mat-form-field fxFlex>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide" type="button">

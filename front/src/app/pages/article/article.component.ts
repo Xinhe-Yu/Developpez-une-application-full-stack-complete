@@ -74,13 +74,13 @@ export class ArticleComponent implements OnInit {
       }),
       finalize(() => {
         this.isSubmitting = false;
+        // setTimeout(() => {
+        //   this.input.nativeElement.blur();
+        // }, 200);
         this.form.reset();
-        setTimeout(() => {
-          this.input.nativeElement.blur();
-        }, 200);
-        this.form.markAsUntouched();
-        this.form.markAsPristine();
-        this.cdr.markForCheck();
+        // this.form.markAsUntouched();
+        // this.form.markAsPristine();
+        // this.cdr.markForCheck();
       })
     ).subscribe(() => {
       this.scrollToBottom();

@@ -108,7 +108,6 @@ export class ProfileComponent implements OnInit {
 
   public unsubscribe(event: Event, topic: Topic): void {
     event.preventDefault();
-
     this.topicService.unsubscribe(topic.id).pipe(
       tap(() => {
         this.$userData = this.$userData.pipe(

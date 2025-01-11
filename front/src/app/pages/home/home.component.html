@@ -1,7 +1,9 @@
 @if ($isLogged | async; as isLogged) {
 <div class="header">
   <button mat-flat-button color="primary" routerLink="articles/new">Créer un article</button>
-  <button mat-flat-button>Trier par ↓</button>
+  <button mat-flat-button (click)="toggleSort()">
+    Trier par {{ sortOrder === 'asc' ? '↑' : '↓' }}
+  </button>
 </div>
 
 <ng-container>

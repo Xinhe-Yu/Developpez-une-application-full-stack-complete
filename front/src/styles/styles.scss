@@ -33,10 +33,18 @@ mat-icon.xl {
   .grid-two-columns {
     grid-template-columns: 1fr 1fr;
   }
+
+  .display-md {
+    display: none;
+  }
 }
 
 .p2 {
   padding: .5rem;
+}
+
+.p3 {
+  padding: 1rem;
 }
 
 .topics {

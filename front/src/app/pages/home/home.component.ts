@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { Observable, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { Articles } from 'src/app/interfaces/articles.interface';
 import { ArticleService } from 'src/app/services/article.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -22,6 +22,8 @@ import { SessionService } from 'src/app/services/session.service';
 export class HomeComponent implements OnInit {
   public $isLogged!: Observable<boolean>;
   public $articles!: Observable<Articles | null>;
+  public sortOrder: 'asc' | 'desc' = 'desc';
+
 
   constructor(
     private sessionService: SessionService,
@@ -32,6 +34,26 @@ export class HomeComponent implements OnInit {
     this.$isLogged = this.sessionService.$isLogged();
     this.$articles = this.$isLogged.pipe(
       switchMap(isLogged => isLogged ? this.articleService.all() : of(null))
+    );
+  }
+
+  toggleSort() {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    this.$articles = this.fetchSortedArticles();
+  }
+
+  private fetchSortedArticles(): Observable<Articles | null> {
+    return this.articleService.all().pipe(
+      map(articles => {
+        if (articles && articles.data) {
+          articles.data.sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+          });
+        }
+        return articles;
+      })
     );
   }
 }

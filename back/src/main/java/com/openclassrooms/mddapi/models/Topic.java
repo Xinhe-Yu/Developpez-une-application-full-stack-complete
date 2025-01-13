@@ -39,6 +39,9 @@ public class Topic {
   @Column(name = "name")
   private String name;
 
+  @Column(name = "description")
+  private String description;
+
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;

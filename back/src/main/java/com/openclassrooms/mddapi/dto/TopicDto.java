@@ -15,4 +15,6 @@ public class TopicDto {
   @NotBlank
   @Size(max = 50)
   private String name;
+
+  private String description;
 }

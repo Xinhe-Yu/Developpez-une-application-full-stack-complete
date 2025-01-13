@@ -51,6 +51,15 @@ public class TopicController {
     return ResponseEntity.ok(topicDtos);
   }
 
+  @GetMapping("/subs")
+  public ResponseEntity<List<TopicDto>> getUserSubscriptions(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    User user = userDetailsService.getCurrentUser(userDetails.getEmail());
+
+    List<Topic> topics = user.getTopics();
+    List<TopicDto> topicDtos = topicMapper.toDto(topics);
+    return ResponseEntity.ok(topicDtos);
+  }
+
   @PostMapping("/{id}/subscribe")
   public ResponseEntity<ApiResponseDto> subscribe(@PathVariable Long id,
       @AuthenticationPrincipal CustomUserDetails userDetails) {

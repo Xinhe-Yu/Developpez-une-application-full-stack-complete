@@ -3,10 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { Articles } from 'src/app/interfaces/articles.interface';
 import { ArticleService } from 'src/app/services/article.service';
 import { SessionService } from 'src/app/services/session.service';
+import { ToastService } from 'src/app/services/toast.service';
 @Component({
   selector: 'app-home',
   imports: [
@@ -28,12 +29,24 @@ export class HomeComponent implements OnInit {
   constructor(
     private sessionService: SessionService,
     private articleService: ArticleService,
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
     this.$isLogged = this.sessionService.$isLogged();
     this.$articles = this.$isLogged.pipe(
-      switchMap(isLogged => isLogged ? this.articleService.all() : of(null))
+      switchMap(isLogged => {
+        if (isLogged) {
+          return this.articleService.all().pipe(
+            catchError(error => {
+              this.toastService.showError(error);
+              return of(null);
+            })
+          );
+        } else {
+          return of(null);
+        }
+      })
     );
   }
 
@@ -53,6 +66,10 @@ export class HomeComponent implements OnInit {
           });
         }
         return articles;
+      }),
+      catchError(error => {
+        this.toastService.showError(error);
+        return of(null)
       })
     );
   }

@@ -9,7 +9,6 @@
 <ng-container>
   @if($articles | async; as articles)
   {
-
   <div class="grid-two-columns">
     @for(article of articles.data; track article.id) {
     <a [routerLink]="['/articles', article.id]">

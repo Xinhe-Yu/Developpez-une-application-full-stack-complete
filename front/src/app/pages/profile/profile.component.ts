@@ -8,13 +8,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { catchError, combineLatest, EMPTY, finalize, forkJoin, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, EMPTY, filter, finalize, forkJoin, map, Observable, tap } from 'rxjs';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { Session } from 'src/app/interfaces/auth/session.interface';
 import { UpdateRequest } from 'src/app/interfaces/auth/updateRequest.interface';
 import { Topic } from 'src/app/interfaces/topic.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { SessionService } from 'src/app/services/session.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { TopicService } from 'src/app/services/topic.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -36,7 +37,8 @@ import { UserService } from 'src/app/services/user.service';
 export class ProfileComponent implements OnInit {
   public hideNewPassword = true;
   public hidePassword = true;
-  public $userData!: Observable<{ user: Session | undefined, subscriptions: Topic[] }>;
+  public $userData!: Observable<{ user: Session, subscriptions: Topic[] }>;
+
   public form = this.fb.group({
     username: [''],
     email: [''],
@@ -48,18 +50,25 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private sessionService: SessionService,
     private topicService: TopicService,
     private authService: AuthService,
+    private toastService: ToastService,
     private router: Router
   ) { }
 
   ngOnInit() {
     this.$userData = combineLatest({
       user: this.sessionService.$user(),
-      subscriptions: this.userService.getSubscriptions()
-    });
+      subscriptions: this.topicService.getSubscriptions()
+    }).pipe(
+      filter(({ user }) => user !== undefined),
+      map(({ user, subscriptions }) => ({
+        user: user as Session,
+        subscriptions
+      }))
+    );
+
     this.$userData.subscribe(data => {
       if (data.user) {
         this.form.patchValue({
@@ -105,25 +114,23 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-
-  public unsubscribe(event: Event, topic: Topic): void {
-    event.preventDefault();
-    this.topicService.unsubscribe(topic.id).pipe(
+  public unsubscribe(topicId: number): void {
+    this.topicService.unsubscribe(topicId).pipe(
       tap(() => {
-        this.$userData = this.$userData.pipe(
-          map(({ user, subscriptions }) => ({
-            user,
-            subscriptions: subscriptions.filter(sub => sub.id !== topic.id)
-          }))
+        // this.$userData = this.$userData.pipe(
+        this.$userData.pipe(
+          map(data => (console.log({
+            ...data,
+            subscriptions: data.subscriptions.filter(sub => sub.id !== topicId)
+          })))
         );
       }),
       catchError((error) => {
-        console.error('Unsubscribe failed', error);
+        this.toastService.showError(error);
         return EMPTY;
       })
     ).subscribe();
   }
-
 
   public logOut(): void {
     this.sessionService.logOut();

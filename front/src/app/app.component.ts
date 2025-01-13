@@ -5,11 +5,12 @@ import { SessionService } from './services/session.service';
 import { Session } from './interfaces/auth/session.interface';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

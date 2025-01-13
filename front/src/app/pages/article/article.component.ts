@@ -12,6 +12,7 @@ import { Article } from 'src/app/interfaces/article.interface';
 import { Comments } from 'src/app/interfaces/comments.interface';
 import { NewComment } from 'src/app/interfaces/form/newComment.interface';
 import { ArticleService } from 'src/app/services/article.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-article',
@@ -41,7 +42,7 @@ export class ArticleComponent implements OnInit {
     private fb: FormBuilder,
     private articleService: ArticleService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -74,16 +75,11 @@ export class ArticleComponent implements OnInit {
       }),
       finalize(() => {
         this.isSubmitting = false;
-        // setTimeout(() => {
-        //   this.input.nativeElement.blur();
-        // }, 200);
         this.form.reset();
-        // this.form.markAsUntouched();
-        // this.form.markAsPristine();
-        // this.cdr.markForCheck();
       })
     ).subscribe(() => {
       this.scrollToBottom();
+      this.toastService.showSuccess('Commentaire ajouté avec succès');
     });
   }
 

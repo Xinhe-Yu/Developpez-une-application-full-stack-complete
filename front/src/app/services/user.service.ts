@@ -13,8 +13,4 @@ export class UserService {
   public getProfile(): Observable<User> {
     return this.httpClient.get<User>(`${this.pathService}/profile`);
   }
-
-  public getSubscriptions(): Observable<Topic[]> {
-    return this.httpClient.get<Topic[]>(`${this.pathService}/subs`);
-  }
 }

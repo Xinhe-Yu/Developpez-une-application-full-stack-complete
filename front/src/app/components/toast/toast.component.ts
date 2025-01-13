@@ -1,27 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ErrorMessageService } from 'src/app/services/error-message.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-toast',
-  imports: [],
+  standalone: true,
+  imports: [
+    NgClass
+  ],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss'
 })
-export class ToastComponent implements OnInit {
-  errorMessage: string | null = null;
+export class ToastComponent implements OnInit, OnDestroy {
+  message: { text: string, type: 'error' | 'success' } | null = null;
   private subscription: Subscription | undefined;
 
-  constructor(private errorMessageService: ErrorMessageService) { }
+  constructor(private toastService: ToastService) { }
 
   ngOnInit(): void {
-    this.subscription = this.errorMessageService.error$.subscribe(message => {
-      this.errorMessage = message;
+    this.subscription = this.toastService.message$.subscribe(message => {
+      this.message = message;
       if (message) {
-        setTimeout(() => this.errorMessageService.clearError(), 5000)
+        setTimeout(() => this.toastService.clearMessage(), 5000);
       }
-    })
+    });
   }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

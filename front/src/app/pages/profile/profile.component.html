@@ -74,13 +74,9 @@
     </mat-card-title>
     <mat-card-content>
       {{topic.description}}
-      On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions,
-      et empêche de se concentrer sur la mise en page elle-même. L'avantage du Lorem Ipsum sur un texte générique
-      comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale, et en
-      tout cas comparable avec celle du français standard. De nombreuses suites logicielles
     </mat-card-content>
 
-    <button mat-raised-button color="primary" (click)="unsubscribe($event, topic)">
+    <button mat-raised-button color="primary" type="button" (click)="unsubscribe(topic.id)">
       Se désabonner
     </button>
   </mat-card>

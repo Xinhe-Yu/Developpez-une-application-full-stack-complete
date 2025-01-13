@@ -13,6 +13,7 @@ import { Session } from 'src/app/interfaces/auth/session.interface';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { LoginRequest } from 'src/app/interfaces/auth/loginRequest.interface';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +45,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private toastService: ToastService
   ) { }
 
   public submit(): void {
@@ -61,10 +63,12 @@ export class LoginComponent {
         this.sessionService.logIn(user);
         this.router.navigate(['/']);
       }),
-      catchError((error) => {
+      catchError(error => {
         this.onError = true;
+        this.toastService.showError(error);
         return throwError(() => error);
       })
-    ).subscribe();
+    ).subscribe(
+    );
   }
 }

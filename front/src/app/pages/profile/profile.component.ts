@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, EMPTY, filter, finalize, forkJoin, map, Observable, tap } from 'rxjs';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { Session } from 'src/app/interfaces/auth/session.interface';
@@ -29,7 +29,8 @@ import { UserService } from 'src/app/services/user.service';
     MatProgressSpinnerModule,
     MatIconModule,
     AsyncPipe,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -37,7 +38,8 @@ import { UserService } from 'src/app/services/user.service';
 export class ProfileComponent implements OnInit {
   public hideNewPassword = true;
   public hidePassword = true;
-  public $userData!: Observable<{ user: Session, subscriptions: Topic[] }>;
+  private userDataSubject = new BehaviorSubject<{ user: Session | undefined, subscriptions: Topic[] }>({ user: undefined, subscriptions: [] });
+  public $userData = this.userDataSubject.asObservable();
 
   public form = this.fb.group({
     username: [''],
@@ -54,11 +56,11 @@ export class ProfileComponent implements OnInit {
     private topicService: TopicService,
     private authService: AuthService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
   ) { }
 
   ngOnInit() {
-    this.$userData = combineLatest({
+    combineLatest({
       user: this.sessionService.$user(),
       subscriptions: this.topicService.getSubscriptions()
     }).pipe(
@@ -67,9 +69,8 @@ export class ProfileComponent implements OnInit {
         user: user as Session,
         subscriptions
       }))
-    );
-
-    this.$userData.subscribe(data => {
+    ).subscribe(data => {
+      this.userDataSubject.next(data);
       if (data.user) {
         this.form.patchValue({
           username: data.user.username,
@@ -78,6 +79,7 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
 
   public submit(): void {
     if (this.form.invalid) {
@@ -114,16 +116,15 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
   public unsubscribe(topicId: number): void {
     this.topicService.unsubscribe(topicId).pipe(
       tap(() => {
-        // this.$userData = this.$userData.pipe(
-        this.$userData.pipe(
-          map(data => (console.log({
-            ...data,
-            subscriptions: data.subscriptions.filter(sub => sub.id !== topicId)
-          })))
-        );
+        const currentData = this.userDataSubject.getValue();
+        this.userDataSubject.next({
+          ...currentData,
+          subscriptions: currentData.subscriptions.filter(sub => sub.id !== topicId)
+        });
       }),
       catchError((error) => {
         this.toastService.showError(error);

@@ -66,6 +66,7 @@
   </mat-card>
 </div>
 
+@if (data.subscriptions.length > 0) {
 <div class="grid-two-columns topics">
   @for(topic of data.subscriptions; track topic.id) {
   <mat-card>
@@ -80,9 +81,13 @@
       Se désabonner
     </button>
   </mat-card>
-
-
   }
 </div>
+} @else {
+<div class="p2"></div>
+<div>Vous n'avez pas de thèmes souscrits.</div>
+<div class="p2"></div>
+<a [routerLink]="['/topics']">Allez voir tous les thèmes</a>
+}
 <div class="p2"></div>
 }

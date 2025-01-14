@@ -1,5 +1,46 @@
+@if ($isLogged | async; as isLogged) {
+<div class="header">
+  <button mat-flat-button color="primary" routerLink="articles/new">Créer un article</button>
+  <button mat-flat-button (click)="toggleSort()">
+    Trier par {{ sortOrder === 'asc' ? '↑' : '↓' }}
+  </button>
+</div>
+
+<ng-container>
+  @if($articles | async; as articles)
+  {
+  <div class="grid-two-columns">
+    @for(article of articles.data; track article.id) {
+    <a [routerLink]="['/articles', article.id]">
+      <mat-card>
+        <mat-card-title>
+          {{article.title}}
+        </mat-card-title>
+        <mat-card-subtitle style="display:grid;grid-template-columns: 1fr 1fr;">
+          <p>
+            {{article.createdAt | date: 'dd/MM/yyyy'}}
+          </p>
+          <p>
+            {{article.user.username}}
+          </p>
+        </mat-card-subtitle>
+        <mat-card-content>
+          {{article.content}}
+        </mat-card-content>
+      </mat-card>
+    </a>
+    }
+  </div>
+
+  }
+</ng-container>
+
+} @else {
 <div class="center">
   <img src="/assets/logo_p6.png" alt="logo" />
-  <h1>Welcome to MDD</h1>
-  <button mat-raised-button color="primary" (click)="start()">Commencer</button>
+  <div class="grid-two-columns">
+    <button mat-stroked-button routerLink="login">Se connecter</button>
+    <button mat-stroked-button routerLink="register">S'inscrire</button>
+  </div>
 </div>
+}

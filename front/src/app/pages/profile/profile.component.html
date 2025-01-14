@@ -1,0 +1,97 @@
+<div class="p2"></div>
+@if ($userData | async; as data) {
+<div class="form">
+  <mat-card>
+    <mat-card-header fxLayoutAlign="center center">
+      <mat-card-title>Profil utilisateur</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-card-content fxLayout="column">
+
+        <mat-form-field appearance="fill">
+          <input matInput formControlName="username" [placeholder]="data.user?.username || 'Nom d\'utilisateur'">
+          @if (form.get('username')?.hasError('required') && form.get('username')?.touched) {
+          <mat-error>username is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <input matInput formControlName="email" [placeholder]="data.user?.email || 'E-mail'">
+          @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>email is required</mat-error>
+          }
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput [type]="hideNewPassword ? 'password' : 'text'" formControlName="newPassword"
+            placeholder="Nouveau mot de passe">
+          <button mat-icon-button matSuffix (click)="hideNewPassword = !hideNewPassword"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideNewPassword" type="button">
+            <mat-icon>{{hideNewPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (form.get('newPassword')?.hasError('minlength')) {
+          <mat-error>Mot de passe doit comporter au moins 8 caractères</mat-error>
+          } @else if (form.get('newPassword')?.hasError('passwordStrength')) {
+          <mat-error>Mot de passe doit comporter au moins 1 chiffre, 1 lettre en maj, 1 lettre en min et 1 caractère
+            spécial</mat-error>
+          }
+        </mat-form-field>
+        <div class="p3"></div>
+
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+            placeholder="Ancien mot de passe">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+
+          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>Mot de passe est nécessaire pour modifier votre profil</mat-error>
+          }
+        </mat-form-field>
+        <div class="p3"></div>
+
+      </mat-card-content>
+      <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="form.invalid">Sauvegarder</button>
+    </form>
+    <button mat-button color="warn" class="btn" (click)="logOut()">Se déconnecter</button>
+  </mat-card>
+  <div class="p2"></div>
+  <hr>
+  <div class="p2"></div>
+
+  <mat-card>
+    <mat-card-header fxLayoutAlign="center center">
+      <mat-card-title>Subscriptions</mat-card-title>
+    </mat-card-header>
+  </mat-card>
+</div>
+
+@if (data.subscriptions.length > 0) {
+<div class="grid-two-columns topics">
+  @for(topic of data.subscriptions; track topic.id) {
+  <mat-card>
+    <mat-card-title>
+      {{topic.name}}
+    </mat-card-title>
+    <mat-card-content>
+      {{topic.description}}
+    </mat-card-content>
+
+    <button mat-raised-button color="primary" type="button" (click)="unsubscribe(topic.id)">
+      Se désabonner
+    </button>
+  </mat-card>
+  }
+</div>
+} @else {
+<div class="p2"></div>
+<div>Vous n'avez pas de thèmes souscrits.</div>
+<div class="p2"></div>
+<a [routerLink]="['/topics']">Allez voir tous les thèmes</a>
+}
+<div class="p2"></div>
+}

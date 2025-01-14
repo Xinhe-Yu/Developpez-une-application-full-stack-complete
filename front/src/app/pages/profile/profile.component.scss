@@ -1,0 +1,50 @@
+@use '../../../styles/variables' as *;
+
+.form {
+  mat-card {
+    margin: auto;
+    width: 90vw;
+    max-width: 20rem;
+    box-shadow: 0 0 0 0 !important;
+
+    mat-card-header {
+      padding-top: 0 !important;
+      padding-bottom: 1rem;
+      justify-content: center;
+    }
+
+    mat-card-content {
+      margin: 0;
+    }
+
+    mat-form-field {
+      width: 100%;
+      display: block !important;
+      visibility: visible !important;
+    }
+  }
+
+  button.btn {
+    width: 12rem;
+    margin: auto;
+  }
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      border: 2px solid $primary;
+      border-radius: 4px;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent !important;
+    }
+
+    .mdc-line-ripple {
+      display: none !important;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      border: 2px solid $primary;
+    }
+  }
+}

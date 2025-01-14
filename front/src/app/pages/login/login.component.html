@@ -1,0 +1,43 @@
+<mat-card>
+  <mat-card-header fxLayoutAlign="center center">
+    <mat-card-title>Se connecter</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-card-content fxLayout="column">
+      <div>E-mail ou nom d'utilisateur</div>
+      <mat-form-field fxFlex subscriptSizing="dynamic">
+        <input matInput formControlName="identifier">
+        @if (form.get('identifier')?.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+        }
+        @if (form.get('identifier')?.hasError('minlength')) {
+        <mat-error>Please enter a valid email address or a username
+          at least 3 characters</mat-error>
+        }
+      </mat-form-field>
+      <div class="p3"></div>
+
+      <div>Mot de passe</div>
+      <mat-form-field fxFlex subscriptSizing="dynamic">
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide" type="button">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        @if (form.get('password')?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+        }
+        @if (form.get('password')?.hasError('minlength')) {
+        <mat-error>Password must be at least 8 characters long</mat-error>
+        }
+      </mat-form-field>
+      <div class="p3"></div>
+
+    </mat-card-content>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Se connecter</button>
+    @if (onError) {
+    <p class="error">An error occurred</p>
+    }
+  </form>
+</mat-card>

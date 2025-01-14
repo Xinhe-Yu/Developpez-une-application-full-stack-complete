@@ -1,0 +1,43 @@
+<div class="p2"></div>
+@if($topics | async ; as topics){
+<mat-card>
+  <mat-card-header fxLayoutAlign="center center">
+    <mat-card-title>Créer un nouvel article</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Sélectionner un thème</mat-label>
+      <mat-select formControlName="topicId">
+        @for(topic of topics; track topic.id) {
+        <mat-option [value]="topic.id">{{topic.name}}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('topicId')?.hasError('required') && form.get('topicId')?.touched) {
+      <mat-error>Topic selection is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Titre de l'article</mat-label>
+      <input matInput formControlName="title" placeholder="Enter title">
+      @if (form.get('title')?.hasError('required') && form.get('title')?.touched) {
+      <mat-error>Title is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Contenu de l'article</mat-label>
+      <textarea matInput formControlName="content" placeholder="Enter content" rows="4"></textarea>
+      @if (form.get('content')?.hasError('required') && form.get('content')?.touched) {
+      <mat-error>Content is required</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
+  </form>
+
+</mat-card>
+
+
+}

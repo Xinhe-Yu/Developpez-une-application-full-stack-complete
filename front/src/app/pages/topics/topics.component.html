@@ -1,0 +1,25 @@
+@if($topicData | async; as data) {
+<ng-container>
+  @if(data.subscriptions.length < data.topics.length) { <div class="grid-two-columns topics">
+    @for(topic of data.topics; track topic.id) {
+    @if(!data.subscriptions.includes(topic.id)) {
+    <mat-card>
+      <mat-card-title>
+        {{topic.name}}
+      </mat-card-title>
+      <mat-card-content>
+        {{topic.description}}
+      </mat-card-content>
+      <button mat-raised-button color="primary" type="button" (click)="subscribe(topic)">
+        S'abonner
+      </button>
+    </mat-card>
+    }
+    }
+    </div>
+    } @else {
+    <div class="p2"></div>
+    <div>Bravo, vous avez déjà abonné tous les thèmes !</div>
+    }
+</ng-container>
+}

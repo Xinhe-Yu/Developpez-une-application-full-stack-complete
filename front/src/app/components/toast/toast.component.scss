@@ -1,0 +1,21 @@
+.alert {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 10px;
+  text-align: center;
+  border-radius: .5rem;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}

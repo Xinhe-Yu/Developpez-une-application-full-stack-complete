@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,8 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Session } from 'src/app/interfaces/auth/session.interface';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { LoginRequest } from 'src/app/interfaces/auth/loginRequest.interface';
-import { catchError, switchMap, tap, throwError } from 'rxjs';
-import { ToastService } from 'src/app/services/toast.service';
+import { switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +28,6 @@ import { ToastService } from 'src/app/services/toast.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-
 })
 
 export class LoginComponent {
@@ -46,7 +44,6 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private sessionService: SessionService,
-    private toastService: ToastService
   ) { }
 
   public submit(): void {
@@ -62,11 +59,6 @@ export class LoginComponent {
       tap((user: Session) => {
         this.sessionService.logIn(user);
         this.router.navigate(['/']);
-      }),
-      catchError(error => {
-        this.onError = true;
-        this.toastService.showError(error);
-        return throwError(() => error);
       })
     ).subscribe(
     );

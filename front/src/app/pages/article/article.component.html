@@ -1,5 +1,5 @@
 <div class="p2"></div>
-<div class="p3 display-md"></div>
+<div class="p4 display-md"></div>
 @if($articleData | async; as data){
 <div class="article-container">
 
@@ -33,9 +33,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <mat-form-field fxFlex>
     <input #commentInput matInput formControlName="content" placeholder="Écrivez ici votre Commentaire">
-    @if (form.get('content')?.hasError('required') && form.get('content')?.touched) {
-    <mat-error>Commentaire ne doit pas être vide</mat-error>
-    }
   </mat-form-field>
 
   @if(isSubmitting) {

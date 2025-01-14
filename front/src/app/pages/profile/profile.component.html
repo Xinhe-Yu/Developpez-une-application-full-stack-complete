@@ -24,20 +24,23 @@
         </mat-form-field>
 
 
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput [type]="hideNewPassword ? 'password' : 'text'" formControlName="newPassword"
             placeholder="Nouveau mot de passe">
           <button mat-icon-button matSuffix (click)="hideNewPassword = !hideNewPassword"
             [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideNewPassword" type="button">
             <mat-icon>{{hideNewPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
-
-          @if (form.get('newPassword')?.hasError('required') && form.get('newPassword')?.touched) {
-          <mat-error>Content is required</mat-error>
+          @if (form.get('newPassword')?.hasError('minlength')) {
+          <mat-error>Mot de passe doit comporter au moins 8 caractères</mat-error>
+          } @else if (form.get('newPassword')?.hasError('passwordStrength')) {
+          <mat-error>Mot de passe doit comporter au moins 1 chiffre, 1 lettre en maj, 1 lettre en min et 1 caractère
+            spécial</mat-error>
           }
         </mat-form-field>
+        <div class="p3"></div>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
             placeholder="Ancien mot de passe">
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
@@ -46,14 +49,15 @@
           </button>
 
           @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-          <mat-error>Content is required</mat-error>
+          <mat-error>Mot de passe est nécessaire pour modifier votre profil</mat-error>
           }
         </mat-form-field>
+        <div class="p3"></div>
 
       </mat-card-content>
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Sauvegarder</button>
+      <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="form.invalid">Sauvegarder</button>
     </form>
-    <button mat-button color="warn" (click)="logOut()">Se déconnecter</button>
+    <button mat-button color="warn" class="btn" (click)="logOut()">Se déconnecter</button>
   </mat-card>
   <div class="p2"></div>
   <hr>

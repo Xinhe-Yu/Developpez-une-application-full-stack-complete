@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 import { NewArticle } from 'src/app/interfaces/form/newArticle.interface';
 import { Topic } from 'src/app/interfaces/topic.interface';
 import { ArticleService } from 'src/app/services/article.service';
-import { ToastService } from 'src/app/services/toast.service';
 import { TopicService } from 'src/app/services/topic.service';
 
 @Component({
@@ -41,8 +40,6 @@ export class ArticleNewComponent implements OnInit {
     private router: Router,
     private articleService: ArticleService,
     private topicService: TopicService,
-    private toastService: ToastService
-
   ) { }
 
   ngOnInit(): void {
@@ -56,9 +53,6 @@ export class ArticleNewComponent implements OnInit {
       this.articleService.create(newArticle).subscribe({
         next: (article) => {
           this.router.navigate(['/articles', article.id]);
-        },
-        error: (error) => {
-          this.toastService.showError(error);
         }
       });
     }

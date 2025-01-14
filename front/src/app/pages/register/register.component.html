@@ -6,7 +6,7 @@
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-card-content fxLayout="column">
       <div>Nom d'utilisateur</div>
-      <mat-form-field fxFlex>
+      <mat-form-field fxFlex subscriptSizing="dynamic">
         <input matInput formControlName="username">
         @if (form.get('username')?.hasError('required')) {
         <mat-error>Username is required</mat-error>
@@ -15,9 +15,10 @@
         <mat-error>Please a username at least 3 characters</mat-error>
         }
       </mat-form-field>
+      <div class="p3"></div>
 
       <div>Adresse e-mail</div>
-      <mat-form-field fxFlex>
+      <mat-form-field fxFlex subscriptSizing="dynamic">
         <input matInput formControlName="email">
         @if (form.get('email')?.hasError('required')) {
         <mat-error>Email is required</mat-error>
@@ -26,9 +27,10 @@
         <mat-error>Please enter a valid email address</mat-error>
         }
       </mat-form-field>
+      <div class="p3"></div>
 
       <div>Mot de passe</div>
-      <mat-form-field fxFlex>
+      <mat-form-field fxFlex subscriptSizing="dynamic">
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide" type="button">
@@ -38,11 +40,13 @@
         <mat-error>Mot de passe est obligatoire</mat-error>
         } @else if (form.get('password')?.hasError('minlength')) {
         <mat-error>Mot de passe doit comporter au moins 8 caractères</mat-error>
-        } @else if (form.get('password')?.hasError('minlength')) {
+        } @else if (form.get('password')?.hasError('passwordStrength')) {
         <mat-error>Mot de passe doit comporter au moins 1 chiffre, 1 lettre en maj, 1 lettre en min et 1 caractère
           spécial</mat-error>
         }
       </mat-form-field>
+      <div class="p3"></div>
+
     </mat-card-content>
     <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">S'inscrire</button>
     @if (onError) {

@@ -12,7 +12,12 @@ export class TopicService {
   private toastService = inject(ToastService);
 
   public all(): Observable<Topic[]> {
-    return this.httpClient.get<Topic[]>(`${this.pathService}`);
+    return this.httpClient.get<Topic[]>(`${this.pathService}`).pipe(
+      catchError(error => {
+        this.toastService.showError(error);
+        return throwError(() => error);
+      })
+    );
   }
 
   public subscribe(id: number): Observable<Response> {

@@ -1,23 +1,21 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCard, MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, EMPTY, filter, finalize, forkJoin, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, EMPTY, filter, finalize, map, tap } from 'rxjs';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { Session } from 'src/app/interfaces/auth/session.interface';
 import { UpdateRequest } from 'src/app/interfaces/auth/updateRequest.interface';
 import { Topic } from 'src/app/interfaces/topic.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { SessionService } from 'src/app/services/session.service';
-import { ToastService } from 'src/app/services/toast.service';
 import { TopicService } from 'src/app/services/topic.service';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -41,10 +39,10 @@ export class ProfileComponent implements OnInit {
   private userDataSubject = new BehaviorSubject<{ user: Session | undefined, subscriptions: Topic[] }>({ user: undefined, subscriptions: [] });
   public $userData = this.userDataSubject.asObservable();
 
-  public form = this.fb.group({
+  public form: FormGroup = this.fb.group({
     username: [''],
     email: [''],
-    newPassword: [''],
+    newPassword: ['', [Validators.minLength(8), this.passwordValidator()]],
     password: ['', [Validators.required, Validators.minLength(8)]]
 
   });
@@ -55,7 +53,6 @@ export class ProfileComponent implements OnInit {
     private sessionService: SessionService,
     private topicService: TopicService,
     private authService: AuthService,
-    private toastService: ToastService,
     private router: Router,
   ) { }
 
@@ -80,6 +77,9 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.userDataSubject.complete();
+  }
 
   public submit(): void {
     if (this.form.invalid) {
@@ -107,14 +107,7 @@ export class ProfileComponent implements OnInit {
         this.form.get('newPassword')?.reset();
         this.form.get('password')?.reset();
       })
-    ).subscribe({
-      next: () => {
-        console.log('Profile updated successfully');
-      },
-      error: (err) => {
-        console.error('Error updating profile', err);
-      }
-    });
+    ).subscribe();
   }
 
   public unsubscribe(topicId: number): void {
@@ -125,10 +118,6 @@ export class ProfileComponent implements OnInit {
           ...currentData,
           subscriptions: currentData.subscriptions.filter(sub => sub.id !== topicId)
         });
-      }),
-      catchError((error) => {
-        this.toastService.showError(error);
-        return EMPTY;
       })
     ).subscribe();
   }
@@ -136,5 +125,22 @@ export class ProfileComponent implements OnInit {
   public logOut(): void {
     this.sessionService.logOut();
     this.router.navigate(['']);
+  }
+
+  private passwordValidator(): ValidationErrors | null {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if (!value) {
+        return null;
+      }
+
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasNumeric = /[0-9]+/.test(value);
+      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value);
+      const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
+      return !passwordValid ? { passwordStrength: true } : null;
+    }
   }
 }

@@ -1,18 +1,17 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { finalize, forkJoin, map, Observable, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Article } from 'src/app/interfaces/article.interface';
 import { Comments } from 'src/app/interfaces/comments.interface';
 import { NewComment } from 'src/app/interfaces/form/newComment.interface';
 import { ArticleService } from 'src/app/services/article.service';
-import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-article',
@@ -42,7 +41,6 @@ export class ArticleComponent implements OnInit {
     private fb: FormBuilder,
     private articleService: ArticleService,
     private route: ActivatedRoute,
-    private toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -79,7 +77,6 @@ export class ArticleComponent implements OnInit {
       })
     ).subscribe(() => {
       this.scrollToBottom();
-      this.toastService.showSuccess('Commentaire ajouté avec succès');
     });
   }
 

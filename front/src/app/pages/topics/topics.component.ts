@@ -1,10 +1,9 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { BehaviorSubject, catchError, EMPTY, finalize, forkJoin, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, map } from 'rxjs';
 import { Topic } from 'src/app/interfaces/topic.interface';
-import { ToastService } from 'src/app/services/toast.service';
 import { TopicService } from 'src/app/services/topic.service';
 
 @Component({
@@ -20,13 +19,9 @@ import { TopicService } from 'src/app/services/topic.service';
 export class TopicsComponent implements OnInit {
   private topicDataSubject = new BehaviorSubject<{ topics: Topic[], subscriptions: number[] } | null>(null);
   public $topicData = this.topicDataSubject.asObservable();
-  private loadingSubject = new BehaviorSubject<boolean>(false);
-  public loading$ = this.loadingSubject.asObservable();
 
   constructor(
     private topicService: TopicService,
-    private toastService: ToastService,
-    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -41,7 +36,10 @@ export class TopicsComponent implements OnInit {
     ).subscribe(data => {
       this.topicDataSubject.next(data);
     });
+  }
 
+  ngOnDestroy(): void {
+    this.topicDataSubject.complete();
   }
 
   public subscribe(topic: Topic): void {

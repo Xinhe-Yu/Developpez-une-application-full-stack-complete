@@ -3,11 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { Articles } from 'src/app/interfaces/articles.interface';
 import { ArticleService } from 'src/app/services/article.service';
 import { SessionService } from 'src/app/services/session.service';
-import { ToastService } from 'src/app/services/toast.service';
 @Component({
   selector: 'app-home',
   imports: [
@@ -25,24 +24,17 @@ export class HomeComponent implements OnInit {
   public $articles!: Observable<Articles | null>;
   public sortOrder: 'asc' | 'desc' = 'desc';
 
-
   constructor(
     private sessionService: SessionService,
     private articleService: ArticleService,
-    private toastService: ToastService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.$isLogged = this.sessionService.$isLogged();
     this.$articles = this.$isLogged.pipe(
       switchMap(isLogged => {
         if (isLogged) {
-          return this.articleService.all().pipe(
-            catchError(error => {
-              this.toastService.showError(error);
-              return of(null);
-            })
-          );
+          return this.articleService.all();
         } else {
           return of(null);
         }
@@ -50,7 +42,7 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  toggleSort() {
+  toggleSort(): void {
     this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
     this.$articles = this.fetchSortedArticles();
   }
@@ -66,10 +58,6 @@ export class HomeComponent implements OnInit {
           });
         }
         return articles;
-      }),
-      catchError(error => {
-        this.toastService.showError(error);
-        return of(null)
       })
     );
   }

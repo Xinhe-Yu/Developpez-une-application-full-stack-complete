@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { SessionService } from 'src/app/services/session.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { RegisterRequest } from 'src/app/interfaces/auth/registerRequest.interface';
-import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { Jwt } from 'src/app/interfaces/auth/jwt.interface';
 import { Session } from 'src/app/interfaces/auth/session.interface';
 import { ToastService } from 'src/app/services/toast.service';
@@ -45,7 +45,6 @@ export class RegisterComponent {
     private authService: AuthService,
     private sessionService: SessionService,
     private toastService: ToastService
-
   ) { }
 
   public submit(): void {
@@ -62,10 +61,6 @@ export class RegisterComponent {
         this.sessionService.logIn(user);
         this.router.navigate(['/topics']);
         this.toastService.showSuccess('Bienvenue ! Abonnez-vous d\'abord aux thèmes qui vous intéressent.');
-      }),
-      catchError((error) => {
-        this.onError = true;
-        return throwError(() => error);
       })
     ).subscribe();
   }
@@ -82,7 +77,6 @@ export class RegisterComponent {
       const hasLowerCase = /[a-z]/.test(value);
       const hasNumeric = /[0-9]+/.test(value);
       const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value);
-
       const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
       return !passwordValid ? { passwordStrength: true } : null;
     }

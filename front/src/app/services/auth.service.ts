@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { catchError, Observable, throwError } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import { LoginRequest } from "../interfaces/auth/loginRequest.interface";
 import { RegisterRequest } from "../interfaces/auth/registerRequest.interface";
 import { Jwt } from "../interfaces/auth/jwt.interface";
@@ -33,16 +33,14 @@ export class AuthService {
   }
 
   public me(): Observable<Session> {
-    return this.httpClient.get<Session>(`${this.pathService}/me`).pipe(
-      catchError(error => {
-        this.toastService.showError(error);
-        return throwError(() => error);
-      })
-    );
+    return this.httpClient.get<Session>(`${this.pathService}/me`);
   }
 
   public update(updateRequest: UpdateRequest): Observable<Jwt> {
     return this.httpClient.put<Jwt>(`${this.pathService}/update`, updateRequest).pipe(
+      tap(() => {
+        this.toastService.showSuccess('Profil modifié avec succès');
+      }),
       catchError(error => {
         this.toastService.showError(error);
         return throwError(() => error);

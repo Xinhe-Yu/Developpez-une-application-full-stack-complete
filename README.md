@@ -100,4 +100,4 @@ Protects sensitive information by enabling secure configuration with environment
 Provides a powerful way to work with events, asynchronous calls, and data streams
 
 #### Material UI
-A comprehensive UI component library for Angular that offers a customizable theming system, with the deeppurple-amber theme, featuring a rich deep purple primary color and a warm amber accent color, creating a sophisticated and stylish look ideal for modern web applications13.
+A comprehensive UI component library for Angular that offers a customizable theming system, with the deeppurple-amber theme, featuring a rich deep purple primary color and a warm amber accent color, creating a sophisticated and stylish look ideal for modern web applications.

@@ -67,7 +67,7 @@ public class AuthController {
       return ResponseEntity.ok(response);
     } catch (Exception e) {
       e.printStackTrace();
-      ErrorResponseDto response = new ErrorResponseDto("Registration failed: " + e.getMessage());
+      ErrorResponseDto response = new ErrorResponseDto("Échec inscription : " + e.getMessage());
       return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
   }
@@ -117,11 +117,11 @@ public class AuthController {
       TokenResponseDto response = new TokenResponseDto(token);
       return ResponseEntity.ok(response);
     } catch (ResponseStatusException e) {
-      ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec modification : " +
           e.getReason());
       return new ResponseEntity<>(response, e.getStatusCode());
     } catch (Exception e) {
-      ErrorResponseDto response = new ErrorResponseDto("Update failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec modification : " +
           e.getMessage());
       return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

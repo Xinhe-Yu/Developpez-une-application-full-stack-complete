@@ -22,7 +22,7 @@ public class ArticleService {
 
   public Article getArticleById(Long id) {
     Article article = articleRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Article not found"));
+        .orElseThrow(() -> new RuntimeException("Article non trouvé"));
 
     return article;
   }

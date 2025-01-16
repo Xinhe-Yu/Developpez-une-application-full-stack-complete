@@ -25,7 +25,7 @@ public class SubscriptionService {
   @Transactional
   public void subscribe(Long topicId, User user) {
     Topic topic = topicRepository.findById(topicId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Thème non trouvé"));
 
     if (user.getTopics() == null) {
       user.setTopics(new ArrayList<>());
@@ -33,7 +33,7 @@ public class SubscriptionService {
 
     if (user.getTopics().stream().anyMatch(t -> t.getId().equals(topicId))) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Already subscribed to this topic");
+          HttpStatus.BAD_REQUEST, "Déjà abonné à ce thème");
     }
     user.getTopics().add(topic);
     userRepository.save(user);
@@ -44,7 +44,7 @@ public class SubscriptionService {
     if (user.getTopics() == null ||
         !user.getTopics().removeIf(t -> t.getId().equals(topicId))) {
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Not subscribed to this topic");
+          HttpStatus.BAD_REQUEST, "Non abonné à ce thème");
     }
 
     userRepository.save(user);

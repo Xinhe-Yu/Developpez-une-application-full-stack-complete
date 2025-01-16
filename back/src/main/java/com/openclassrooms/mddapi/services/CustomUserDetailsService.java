@@ -25,11 +25,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             .username(user.getUsername())
             .password(user.getPassword())
             .build())
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
   }
 
   public User getCurrentUser(String loginIdentifier) {
     return userRepository.findByEmailOrUsername(loginIdentifier, loginIdentifier)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
   }
 }

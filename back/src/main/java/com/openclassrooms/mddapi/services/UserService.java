@@ -21,30 +21,31 @@ public class UserService {
 
   public User getUserById(Long id) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
     return user;
   }
 
   public User validateAndUpdateUser(UpdateDto userDto, CustomUserDetails currentUser) {
     User user = userRepository.findById(currentUser.getId())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
+
+    if (userDto.getPassword() == null || !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mot de passe incorrect");
+    }
 
     if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), user.getId())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email est déjà utilisé");
     } else if (userRepository.existsByUsernameAndIdNot(userDto.getUsername(), user.getId())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nom d'utilisateur est déjà utilisé");
     }
 
     user.setUsername(userDto.getUsername());
     user.setEmail(userDto.getEmail());
 
     if (userDto.getNewPassword() != null && !userDto.getNewPassword().isEmpty()) {
-      if (userDto.getPassword() == null || !passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
-      }
 
       if (!validatePassword(userDto.getNewPassword())) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mot de passe invalide");
       }
 
       user.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
@@ -56,11 +57,11 @@ public class UserService {
 
   public void validateAndSaveUser(RegisterDto userDto) {
     if (!validatePassword(userDto.getPassword())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid password");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mot de passe invalide");
     } else if (userRepository.existsByEmail(userDto.getEmail())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email est déjà utilisé");
     } else if (userRepository.existsByUsername(userDto.getUsername())) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already in use");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nom d'utilisateur est déjà utilisé");
     }
 
     User user = new User(userDto.getEmail(),
@@ -79,5 +80,4 @@ public class UserService {
 
     return hasUppercase && hasLowercase && hasNumber && hasSpecialChar && hasMinimumLength;
   }
-
 }

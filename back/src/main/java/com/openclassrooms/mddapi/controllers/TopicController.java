@@ -66,14 +66,14 @@ public class TopicController {
     try {
       User user = userDetailsService.getCurrentUser(userDetails.getEmail());
       subscriptionService.subscribe(id, user);
-      MsgResponseDto response = new MsgResponseDto("Subscribed to topic");
+      MsgResponseDto response = new MsgResponseDto("Abonnement réussi");
       return ResponseEntity.ok(response);
     } catch (ResponseStatusException e) {
-      ErrorResponseDto response = new ErrorResponseDto("Subscription failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec abonnement : " +
           e.getReason());
       return new ResponseEntity<>(response, e.getStatusCode());
     } catch (Exception e) {
-      ErrorResponseDto response = new ErrorResponseDto("Subscription failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec abonnement : " +
           e.getMessage());
       return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -85,14 +85,14 @@ public class TopicController {
     try {
       User user = userDetailsService.getCurrentUser(userDetails.getEmail());
       subscriptionService.unsubscribe(id, user);
-      MsgResponseDto response = new MsgResponseDto("Unsubscribed from topic");
+      MsgResponseDto response = new MsgResponseDto("Désabonnement réussi");
       return ResponseEntity.ok(response);
     } catch (ResponseStatusException e) {
-      ErrorResponseDto response = new ErrorResponseDto("Unsubscription failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec désabonnement : " +
           e.getReason());
       return new ResponseEntity<>(response, e.getStatusCode());
     } catch (Exception e) {
-      ErrorResponseDto response = new ErrorResponseDto("Unsubscription failed: " +
+      ErrorResponseDto response = new ErrorResponseDto("Échec désabonnement : " +
           e.getMessage());
       return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

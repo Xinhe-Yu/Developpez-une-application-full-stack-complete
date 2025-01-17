@@ -82,7 +82,7 @@ public class AuthController {
       TokenResponseDto response = new TokenResponseDto(token);
       return ResponseEntity.ok(response);
     } catch (AuthenticationException e) {
-      ErrorResponseDto response = new ErrorResponseDto("Authentication failed");
+      ErrorResponseDto response = new ErrorResponseDto("Échec authentication");
       return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
   }

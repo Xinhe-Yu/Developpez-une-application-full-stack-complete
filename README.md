@@ -29,7 +29,7 @@ Get into the back-end folder by:
 
 2. Configure environment variables
 
-Locate the `env_template` file. Make a copy in the same folder and rename it `.env`. Add your MySQL root's username and password.
+Locate the `env_template` file. Make a copy in the same folder and rename it `.env`. Add your MySQL root's username and password, and a Encryption Key for encrypting and decrypting the JWT.
 
 3. Initialize the Database Schema With MySQL installed and running, load the initial database schema:
 

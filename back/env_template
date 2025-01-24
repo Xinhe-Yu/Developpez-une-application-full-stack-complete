@@ -1,2 +1,3 @@
 DB_USERNAME=[mySQL root username]
 DB_PASSWORD=[mySQL root password]
+JWT_KEY=[A encryption key for jwt]

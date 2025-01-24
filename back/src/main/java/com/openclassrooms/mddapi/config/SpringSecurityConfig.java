@@ -22,15 +22,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.openclassrooms.mddapi.services.CustomUserDetailsService;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+  private final String jwtKey;
+
+  public SpringSecurityConfig() {
+    Dotenv dotenv = Dotenv.load();
+    this.jwtKey = dotenv.get("JWT_KEY");
+  }
+
   @Bean
   public JWTAuthenticationFilter jwtAuthenticationFilter() {
     return new JWTAuthenticationFilter();
   }
-
-  private final String jwtKey = "RgHwH7+YjFCX4nLT/PrwtutgPO43Zmtffe1yoPc/gAGN97nrVM8/eK3YUn4uvyn6";
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
